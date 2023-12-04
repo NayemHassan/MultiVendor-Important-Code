@@ -1,0 +1,21 @@
+//Insert With Slug  
+public function StoreBrand(Request $request){
+       
+            $image = $request->file('brand_image');
+            $img_nam = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
+            Image::make($image)->save('admin_upload/brand_image/'.$img_nam);
+            $Db_save = $img_nam;
+            Brand::insert([
+                 'brand_name' =>$request->brand_name,
+                 'brand_slug' => strtolower(str_replace(' ','-',$request->brand_name)), [je kunu ekta use kor;ei hobe ]
+                //  Same As work 
+                //  'brand_slug' => str::slug($request->brand_name),
+                 'brand_image' => $Db_save,   
+            ]);
+
+            $notification = array(
+                'message' =>'Brand Added Successfully',
+                'alert-type'=> 'info'
+             );
+            return redirect()->route('all.brand')->with($notification);
+    } //
