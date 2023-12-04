@@ -1,0 +1,14 @@
+ public function DeleteeBrand($id){
+        
+        $brand = Brand::findOrFail($id);
+        $path = public_path('admin_upload/brand_image/'.$brand->brand_image);
+        if(file_exists($path)){
+            @unlink($path);
+        }
+        Brand::findOrFail($id)->delete();
+        $notification = array(
+            'message' =>'Brand  Successfully Deleted',
+            'alert-type'=> 'info'
+            );
+        return redirect()->route('all.brand')->with($notification);
+    }
