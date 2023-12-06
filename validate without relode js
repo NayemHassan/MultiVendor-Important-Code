@@ -1,0 +1,47 @@
+//CDN
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<form action="{{route('store.brand')}}" id ="myForm" method="post" enctype="multipart/form-data">
+                @csrf
+
+                <div class="row mb-3" bis_skin_checked="1">
+                <div class="col-sm-3" bis_skin_checked="1">
+                    <h6 class="mb-0">Name</h6>
+                </div>
+                <div class="col-sm-9 text-secondary form-group" bis_skin_checked="1">
+                    <input type="text" name="brand_name" class="form-control" value="">
+
+                </div>
+              </div>
+
+ </form>
+
+
+                      //
+                      <script type="text/javascript">
+    $(document).ready(function (){
+        $('#myForm').validate({
+            rules: {
+                brand_name: {
+                    required : true,
+                },
+            },
+            messages :{
+                brand_name: {
+                    required : 'Please Enter THe NAme',
+                },
+            },
+            errorElement : 'span',
+            errorPlacement: function (error,element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight : function(element, errorClass, validClass){
+                $(element).addClass('is-invalid');
+            },
+            unhighlight : function(element, errorClass, validClass){
+                $(element).removeClass('is-invalid');
+            },
+        });
+    });
+
+</script>
