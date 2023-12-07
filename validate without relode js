@@ -1,6 +1,7 @@
 //CDN
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 //Also include Download File
+<script src="{{ asset('backend/assets/js/validate.min.js') }}"></script>
 <form action="{{route('store.brand')}}" id ="myForm" method="post" enctype="multipart/form-data">
                 @csrf
 
