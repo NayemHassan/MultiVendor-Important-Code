@@ -1,0 +1,7 @@
+<option value="{{$subcat->id}}" {{$subcat->id == $subsCat->subcat_id ? 'selected' : '' }}>{{$subcat->categories_name}}</option>
+
+ <option >Select Category</option>
+  @foreach( $category as $cat)
+  <option  value="{{$cat->id}}" {{$cat->id == $editCat->subcat_id ? 'selected' : '' }} >{{ $cat->category_name}}</option>
+  @endforeach
+</select>
