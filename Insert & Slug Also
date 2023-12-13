@@ -19,3 +19,10 @@ public function StoreBrand(Request $request){
              );
             return redirect()->route('all.brand')->with($notification);
     } //
+
+//Slug Pass($slug)
+        SubCategories::where('subcategory_slug',$slug)->first();
+
+Slug Use And Delete
+        SubCategories::where('subcategory_slug',$slug)->first()->delete();
+
