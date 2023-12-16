@@ -1,0 +1,64 @@
+Route::middleware(['auth'])->group(function () {
+    Route::controller(AdminController::class)->group(function(){
+        Route::get('/vendor/inactive' ,'VendorInactive')->name('vendor.inactive');
+        Route::get('/vendor/active' ,'VendorActive')->name('vendor.active');
+        Route::get('/vendor/Details/inactive/{id}' ,'DetailsInactive')->name('details.inactive');
+        Route::get('/vendor/Details/active/{id}' ,'DetailsActive')->name('details.active');
+        Route::post('/vendor/Apply/inactive/{id}' ,'UpdateInactiveApply')->name('update.inactive.apply');
+        Route::post('/vendor/Apply/active/{id}' ,'UpdateActiveApply')->name('update.active.apply');
+
+    });
+});
+
+
+ public function VendorInactive(){
+        $vendorInactive = User::where('status','inactive')->where('role','vendor')->latest()->get();
+        return view('backend.vendor.vendor_inactive',compact('vendorInactive'));
+    }//End Method
+    public function DetailsInactive($id){
+        $dInactive  = User::findOrFail($id);
+        return view('backend.vendor.vendor_details_inactive',compact('dInactive'));
+    }//End Method 
+    public function UpdateInactiveApply($id){
+        User::findOrFail($id)->update([
+            'status' =>'active',
+        ]);
+        $notification = array(
+            'message' =>'Vendor Sccessflly Active',
+            'alert-type'=> 'info'
+         );
+       return redirect()->route('vendor.active')->with($notification);
+    }//End MEthod 
+
+public Function VendorActive(){
+        $vendorActive = User::where('status','active')->where('role','vendor')->latest()->get();
+        return view('backend.vendor.vendor_active',compact('vendorActive'));
+    }//End Method
+    public function DetailsActive($id){
+        $dActive = User::findOrFail($id);
+        return view('backend.vendor.vendor_details_active',compact('dActive'));
+    }//End Method
+    public function UpdateActiveApply($id){
+        User::findOrFail($id)->update([
+            'status' =>'inactive',
+        ]);
+        $notification = array(
+            'message' =>'Vendor Sccessflly InActive',
+            'alert-type'=> 'info'
+         );
+       return redirect()->route('vendor.inactive')->with($notification);
+    }
+
+
+//Frontend Vendor  Index
+$id = Illuminate\Support\Facades\Auth::user()->id;
+$vendor =  App\Models\User::find($id);
+$status = $vendor->status;
+@endphp
+
+@if($status== 'active')
+<h2>Your Account is <span class="text-success">Active</span></h2>
+@else
+<h2>Your Account is <span class="text-danger">InActive</span></h2>
+<p class="text-danger">Please wait admin will Check and approve Your Account</p>
+@endif
