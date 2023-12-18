@@ -1,0 +1,18 @@
+<div class="mb-3">
+<label for="inputProductTitle" class="form-label">Main Thumbnail</label>
+<input type="file" class="form-control" name="product_thumbnail" id="inputProductTitle" onChange="mainThamUrl(this)">
+<br>
+<img src="" id="mainThmb" />
+</div>
+//////////Js///////////
+<script type="text/javascript">
+	function mainThamUrl(input){
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function(e){
+				$('#mainThmb').attr('src',e.target.result).width(80).height(80);
+			};
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+</script>
