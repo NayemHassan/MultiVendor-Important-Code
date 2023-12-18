@@ -1,3 +1,4 @@
+////////////////////////////////////////// Single Image/////////////////////////////////////////////////// 
 <div class="mb-3">
 <label for="inputProductTitle" class="form-label">Main Thumbnail</label>
 <input type="file" class="form-control" name="product_thumbnail" id="inputProductTitle" onChange="mainThamUrl(this)">
@@ -16,3 +17,5 @@
 		}
 	}
 </script>
+
+////////////////////////////////////////////Single Image//////////////////////////////////////////////
