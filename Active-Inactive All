@@ -62,3 +62,10 @@ $status = $vendor->status;
 <h2>Your Account is <span class="text-danger">InActive</span></h2>
 <p class="text-danger">Please wait admin will Check and approve Your Account</p>
 @endif
+\\\\\\\\\\\\\\\\\\\\\\\\\Another Condition \\\\\\\\\\\\\\\\\\\\\\\\\\\
+<td> @if( $item->status == 1)
+<span class="badge rounded-pill bg-success">Active</span>
+@else
+<span class="badge rounded-pill bg-danger">InActive</span>
+@endif
+</td>
