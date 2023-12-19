@@ -1,4 +1,5 @@
 //Insert With Slug  
+use Illuminate\Support\Str;
 public function StoreBrand(Request $request){
        
             $image = $request->file('brand_image');
