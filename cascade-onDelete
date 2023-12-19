@@ -1,3 +1,3 @@
 //  if i delete categories all  sub category also delete
- $table->foreignId('subcat_id');
- $table->foreign('subcat_id')->references('id')->on('categories')->onDelete('cascade');
+ $table->foreignId('cat_id');
+ $table->foreign('cat_id')->references('id')->on('categories')->onDelete('cascade');
