@@ -1,0 +1,56 @@
+//////Html Code ///
+ <div class="col-12">
+<label for="inputVendor" class="form-label">Category Name</label>
+<select class="form-select" name="category_id" id="inputVendor">
+  <option></option>
+                      @foreach($category as $cat)
+  <option value="{{$cat->id}}">{{$cat->categories_name}}</option>
+  @endforeach
+  </select>
+</div>
+<div class="col-12">
+<label for="inputCollection" class="form-label">Sub-Category Name</label>
+<select class="form-select" name="subcategory_id" id="inputCollection">
+  <option></option>
+                     
+  </select>
+</div>
+   ////JS Code /////
+   <script type="text/javascript">
+	$(document).ready(function(){
+		$('select[name="category_id"]').on('change',function(){
+			var category_id = $(this).val();
+			if(category_id){
+				$.ajax({
+					url:"{{('/subcategory_id/ajax')}}/"+category_id,
+					type:"GET",
+					dataType:'json',
+					success:function(data){
+						$('select[name = "subcategory_id"]').html('');
+						var d = $('select[name= "subcategory_id"]').empty();
+						$.each(data,function(key,value){
+							$('select[name= "subcategory_id"]').append(
+								'<option value="'+value.id+'">'+value.subcategory_name +'</option>')
+						});
+					},
+				});
+			}
+			else{
+				alert('Danger');
+			}
+		});
+	});
+  </script>
+
+   ///Route 
+    Route::get('/subcategory_id/ajax/{cat_Id}' ,'GetSubCategories');
+
+
+   //Controller 
+
+    public function GetSubCategories($category_id){
+        //Ekhan vul name neoa hoise subcat r jaigai cat_id neoa dorkar chilo bujar jonnne
+       // subcategory r foreign key r passs kora   category jodi ek hoy tahole subcategory name assending(ASC) mane A-Z ayvabe pathabe
+        $subcat = SubCategories::where('subcat_id',$category_id)->orderBy('subcategory_name','ASC')->get();
+        return json_encode( $subcat);
+    }
