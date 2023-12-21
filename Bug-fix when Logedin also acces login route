@@ -1,1 +1,26 @@
+///Muddlewre r Vitor
+public function handle(Request $request, Closure $next, string ...$guards): Response
+    {
+        $guards = empty($guards) ? [null]: $guards;
 
+        foreach ($guards as $guard) {
+            if (Auth::guard($guard)->check()) {
+               if(Auth::check() && Auth::user()->role =='user' ){
+                return redirect('/dashboard');
+               }
+               if(Auth::check() && Auth::user()->role =='vendor' ){
+                return redirect('/vendor/dashboard');
+               }
+               if(Auth::check() && Auth::user()->role =='admin' ){
+                return redirect('/admin/dashboard');
+               }
+            }
+        }
+
+        return $next($request);
+    }
+}
+//
+use App\Http\Middleware\RedirectIfAuthenticated;
+Route::get('/admin/login',[AdminController::class, 'AdminLogin'])->middleware(RedirectIfAuthenticated::class);
+Route::get('/vendor/login',[VendorController::class, 'vendorLogin'])->name('vendor.login')->middleware(RedirectIfAuthenticated::class);
