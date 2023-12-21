@@ -1,0 +1,74 @@
+//////////////////HTML Codde ///////////
+<div class="page-content">            
+					  <h5 class="card-title">Update Multi Image</h5>
+                      <hr>					
+                       
+                           <div class="card">
+							<div class="card-body">
+								<table class="table mb-0">
+									<thead>
+										<tr>
+											<th scope="col">#SI</th>
+											<th scope="col">Image</th>
+											<th scope="col">Change Image</th>
+											<th scope="col">Update Image</th>
+											<th scope="col">Delete</th>
+										</tr>
+									</thead>
+									<tbody>
+        <form action="{{route('update.product.multiimage')}}" id ="myForm" method="post" enctype="multipart/form-data">
+                                            
+        @csrf
+        @foreach($multiImg as $key=> $img)
+        <tr>
+        
+        <td>{{$key+1}}</td>
+        <td><img src="{{asset('frontend_upload/product/multiimage/'.$img->photo_name)}}" height="70" width="40" alt=""></td>
+        <td><input type="file" class="form-group" name="multi_img[{{$img->id}}]"></td>
+        <td>
+        <input type="submit" class="btn btn-info btn-sm" value="Update Image"></td>  
+        
+        <td><a href="" id="delete" class="btn btn-sm btn-danger">Delete</a></td>   
+        </tr>
+        @endforeach
+                                        </form>	
+									</tbody>
+                      <tfoot>
+										<tr>
+											<th scope="col">#SI</th>
+											<th scope="col">Image</th>
+											<th scope="col">Change Image</th>
+											<th scope="col">Update Image</th>
+											<th scope="col">Delete</th>
+										</tr>
+                    </tfoot>
+								</table>
+							</div>
+						</div>
+                           				          
+</div>
+//////////////////HTML Codde ///////////
+//Controller Code
+ public function UpdateMultiImageEditUpdate(Request $request){
+        $multi = $request->multi_img;
+            foreach($multi as $id => $img){
+                $imgDel = Multi_Img::findOrFail($id);
+                $paths = public_path('frontend_upload/product/multiimage/'.$imgDel->photo_name);
+                if(file_exists($paths)){
+                    @unlink($paths);
+                }
+                $imge_nams = hexdec(uniqid()).'.'.$img->getClientOriginalExtension();
+                Image::make($img)->resize(800,800)->save('frontend_upload/product/multiimage/'. $imge_nams);
+                $save_db = $imge_nams;
+                Multi_Img::where('id',$id)->update([
+                    'photo_name' => $save_db,
+                    'updated_at' =>Carbon::now(),
+                ]);
+
+            }//End Foreachh 
+        $notification = array(
+            'message' =>'Update  Multi image Successfully ',
+            'alert-type'=> 'info'
+         );
+        return redirect()->back()->with($notification);
+    }
