@@ -1,0 +1,36 @@
+  @php
+  $category =  App\Models\Categories::orderBy('categories_name','ASC')->get();
+  @endphp
+              @foreach($category as $item)
+              <li>
+                  <a href="shop-grid-right.html"> <img src="{{asset('frontend_upload/categories/'.$item->categories_image)}}" alt="" />{{$item->categories_name}}</a>
+              </li>
+             @endforeach
+          </ul>
+          <ul class="end">
+             
+          @foreach($category as $item)
+              <li>
+                  <a href="shop-grid-right.html"> <img src="{{asset('frontend_upload/categories/'.$item->categories_image)}}" alt="" />{{$item->categories_name}}</a>
+              </li>
+             @endforeach
+
+
+//////////////////////////Category r Vitor Sub Category Show Koranu Hoise Condition R maddome
+@php
+$categories =  App\Models\Categories::orderBy('categories_name','ASC')->limit(6)->get();
+@endphp
+@foreach( $categories as $cat)
+<li>
+    <a href="#">{{ $cat->categories_name}}<i class="fi-rs-angle-down"></i></a>
+    <ul class="sub-menu">
+    @php
+$subcategories =  App\Models\subCategories::where('subcat_id', $cat->id)->orderBy('subcategory_name','ASC')->get();
+@endphp 
+@foreach($subcategories  as $subcat)
+        <li><a href="vendors-grid.html">{{$subcat->subcategory_name}}</a></li>
+    @endforeach    
+    </ul>
+</li>
+
+@endforeach
