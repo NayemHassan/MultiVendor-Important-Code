@@ -1,0 +1,19 @@
+@php 
+  $category = App\Models\Categories::orderBy('categories_name','ASC')->get();
+@endphp
+
+<div class="carausel-10-columns" id="carausel-10-columns">
+@foreach($category as $item)
+    <div class="card-2 bg-9 wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
+        <figure class="img-hover-scale overflow-hidden">
+            <a href="shop-grid-right.html"><img src="{{asset('frontend_upload/categories/'.$item->categories_image)}}" alt="" /></a>
+        </figure>
+        <h6><a href="shop-grid-right.html">{{$item->categories_name}}</a></h6>
+        @php
+        $citem = App\Models\Product::where('category_id',$item->id)->get();
+        @endphp
+        <span>{{count($citem)}} items</span>
+    </div>
+@endforeach
+    
+</div>
