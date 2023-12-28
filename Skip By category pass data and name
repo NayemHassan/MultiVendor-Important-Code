@@ -1,5 +1,5 @@
 {
-
+/// 0 mane prothom 1st and 1 mane 2nd emn vabe (Specific Category r nam and tar specific Product Dekhay skip diye)
    public function Index(){
       $skip_cat_0 = Categories::skip(0)->first();
       $skip_product_0 = Product::where('status',1)->where('category_id',$skip_cat_0->id)->orderBy('id','DESC')->limit(5)->get();
