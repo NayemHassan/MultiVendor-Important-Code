@@ -1,4 +1,6 @@
-JS Code //
+//css  meta
+ <meta name="csrf-token" content="{{csrf_token()}}"/>
+JS Code meta  //
 <Script type="text/javascript">
 $.ajaxSetup({
   headers:{
