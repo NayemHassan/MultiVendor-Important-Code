@@ -1,1 +1,43 @@
+////////Ajax Code ////////
+<script>
+  //Remove Cart Ajax
+function mitiCartRemove(rowId){
+  $.ajax({
+  type:'GET',
+  url:'/cart/mini/remove/'+rowId,
+  dataType:'json',
+  success:function(data){
+    miniCart()
+    const Toast = Swal.mixin({
+        toast : true,
+        position: "top-end",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 3000
+       })
+       if($.isEmptyObject(data.error)){
+        Toast.fire({
+          type:'success',
+          title:data.success,
+        })
+       }else{
+        Toast.fire({
+          type:'error',
+          title:data.error,
+        })
+       }
+      //  //End MEssage
+  }
+  });
+}
 
+</script>
+
+/////////////Route//////////////
+Route::get('/cart/mini/remove/{rowId}',[CartController::class,'MiniCartRemove']);
+//////////Controller Code/////////////////
+ public function MiniCartRemove($rowId){
+    Cart::remove($rowId);
+    return response()->json(['success'=>'Successfully Product Remove to Cart']);
+ }
+////////////////////
