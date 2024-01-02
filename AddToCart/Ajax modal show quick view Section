@@ -1,1 +1,178 @@
+//css  meta
+ <meta name="csrf-token" content="{{csrf_token()}}"/>
+JS Code meta  //
+<Script type="text/javascript">
+$.ajaxSetup({
+  headers:{
+    'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+   
+  }
+})
+ //Start Product View Model
+function productView(id){
+  $.ajax({
+     type:'GET',
+     url:'/product/view/modal/'+id,
+     dataType:'json',
+    success:function(data){
+     // console.log(data)
+     $('#pname').text(data.product.product_name);
+     $('#pcode').text(data.product.product_code);
+     $('#pbrand').text(data.product.brand.brand_name);
+     $('#pcategory').text(data.product.category.categories_name);
+     $('#pimage').attr('src','/frontend_upload/product/thumbnail/'+data.product.product_thumbnail);
+    // $('#sellprice').text(data.product.selling_price);
+    //Product price
+    if(data.product.discount_price == null){
+      $('#sellprice').text('');
+      $('#oldprice').text('');
+      $('#sellprice').text(data.product.selling_price);
+    }else{
+      $('#oldprice').text(data.product.discount_price);
+      $('#sellprice').text(data.product.selling_price);
+
+    }//end else
+    //Stoct Part
+    if(data.product.product_qty > 0){
+     $('#available').text('');
+     $('#stockout').text('');
+     $('#available').text('Available');
+
+    }//End if
+    else{
+      $('#available').text('');
+      $('#stockout').text('');
+      $('#stockout').text('Stockout');
+    }//End Else
+
+     //Size 
+     $('select[name="size"]').empty();
+      $.each(data.size,function(key,value){
+        $('select[name="size"]').append('<option value="'+value+'">'+value+' </option>' );
+        if(data.size == ''){
+          $('#sizeArea').hide();
+        }
+        else{
+          $('#sizeArea').show();
+        }
+      })
+      //Color
+
+      $('select[name="color"]').empty();
+      $.each(data.color,function(key,value){
+        $('select[name="color"]').append('<option value="'+value+'"> '+value+' </option>' )
+        if(data.color == ''){
+          $('#colorArea').hide();
+        }
+        else{
+          $('#colorArea').show();
+        }
+      })//End Color
+    }
+    
+  })
+}
+</Script>
+
+
+//Quick View code
+<div class="modal fade custom-modal" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12 col-xs-12 mb-md-0 mb-sm-5">
+                            <div class="detail-gallery">
+                            <img src="" id="pimage" alt="product image" />
+                            </div>
+                            <!-- End Gallery -->
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                            <div class="detail-info pr-30 pl-30">
+                            
+                                <h5 cl
+                                ass="title-detail"><a href="shop-product-right.html" class="text-heading" id="pname"></a></h5>
+                              <br>
+                                   <div class="attr-detail attr-size mb-30" id="sizeArea">
+                                       <strong class="mr-10">Size: </strong>
+                                       <Select class="form-control unicase-form-control" id="size" name="size" >
+                                       
+                                       </Select>
+                                    </div>
+                                
+                                    <div class="attr-detail attr-size mb-30" id="colorArea">
+                                    <strong class="mr-10">Color: </strong>
+                                       <Select class="form-control" id="color"  name="color">
+                                             
+                                       </Select>
+                                    </div>
+                                <div class="clearfix product-price-cover">
+                                    <div class="product-price primary-color float-left">
+                                        <span class="current-price text-brand" id="sellprice">$</span>
+                                        <span>
+                                            <span class="old-price font-md ml-15" id="oldprice">$</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="detail-extralink mb-30">
+                                    <div class="detail-qty border radius">
+                                        <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
+                                        <input type="text" id="qty" name="qty" class="qty-val" value="1" min="1">
+                                        <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
+                                    </div>
+                                    <div class="product-extra-link2">
+                                        <button type="submit" class="button button-add-to-cart" onClick="addToCart()"><i class="fi-rs-shopping-cart"></i>Add to cart</button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                 <div class="col-md-6">
+                                 <div class="font-xs">
+                                    <ul>
+                                        <li class="mb-5" >Brand: <span class="text-brand" id="pbrand"></span></li>
+                                        <li class="mb-5">Category:<span class="text-brand" id="pcategory"></span></li>
+                                    </ul>
+                                </div>
+                                
+                                 </div>
+                                 <div class="col-md-6">
+                                 <div class="font-xs">
+                                    <ul>
+                                        <li class="mb-5">Product Code:  <span class="text-brand" id="pcode"></span> </li>
+                                        <li class="mb-5">Stock:<span class="text-brand badge badge-pill badge-success" style="background:green; color:white!important" id="available"></span>
+                                        <span class="text-brand badge badge-pill badge-danger" style="background:red;color:white!important" id="stockout"></span></li>
+                                    </ul>
+                                </div>
+                                
+                                 </div>
+                                </div>
+                                
+                            </div>
+                            <!-- Detail Info -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+//Route and controller code
+
+       Route::get('/product/view/modal/{id}',[IndexController::class,'ProductViewModal']);
+//Controller Code
+   public function ProductViewModal($id){
+       $product = Product::with('category','brand')->findOrFail($id);
+       $color  = $product->product_color;
+       $product_color = explode(',',$color);
+       $size  = $product->product_size;
+       $product_size = explode(',',$size);
+
+    return response()->json(array(
+      'product' =>$product ,
+      'color' =>$product_color ,
+      'size' =>$product_size ,
+    )); 
+   }//End Method
+
 
