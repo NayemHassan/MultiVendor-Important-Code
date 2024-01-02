@@ -1,0 +1,86 @@
+//Ajax code
+function addToCart(){
+  $('#closeModal').click(); //For close Modal When Click Add to Cart
+   var product_name = $('#pname').text();
+   var id = $('#product_id').val();
+   var color = $('#color option:selected').text();
+   var size = $('#size option:selected' ).text();
+   var quantity = $('#qty').val();
+   $.ajax({
+    type :"POST",
+    dateType : "json",
+    data : {
+      product_name :product_name, color:color,size:size,quantity:quantity
+    },
+    url:"/cart/data/store/"+id,
+    success:function(data){
+      miniCart()
+   //   console.log(data)
+      //Message Sweetalert
+       const Toast = Swal.mixin({
+        toast : true,
+        position: "top-end",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 3000
+       })
+       if($.isEmptyObject(data.error)){
+        Toast.fire({
+          type:'success',
+          title:data.success,
+        })
+       }else{
+        Toast.fire({
+          type:'error',
+          title:data.error,
+        })
+       }
+      //  //End MEssage
+    }
+  })
+ }
+</Script>
+
+/////////////////////////Route ////////////////////////
+ Route::post('/cart/data/store/{id}',[CartController::class,'AddToCart']);
+
+/////////////////Controller Code/////////////
+public function AddToCart(Request $request,$id){
+        $product = Product::findOrFail($id);
+      
+        if( $product->discount_price == NULL){
+            Cart::add([
+                'id' =>$id,
+                'name' =>$request->product_name,
+                'qty' =>$request->quantity,
+                'price' => $product->selling_price,
+                'weight' => 1,
+                
+                'options' =>[
+                    'image' =>$product->product_thumbnail,
+                    'color' => $request->color,
+                    'size' => $request->size,
+                ],
+
+            ]);
+            return response()->json(['success' =>'Successfully Added On Your Cart']);
+        }
+        else{
+            Cart::add([
+                'id' =>$id,
+                'name' =>$request->product_name,
+                'qty' =>$request->quantity,
+                'price' => $product->discount_price,
+                'weight' => 1,
+               
+                'options' =>[
+                   'image' =>$product->product_thumbnail,
+                    'color' => $request->color,
+                    'size' => $request->size
+                ],
+
+            ]);
+            return response()->json(['success' =>'Successfully Added On Your Cart']);
+        }
+            
+    }
