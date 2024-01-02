@@ -1,0 +1,51 @@
+//This Code Write After Add To cart//
+//Ajax code//
+function miniCart(){
+  $.ajax({
+  type:'GET',
+  url:'/product/mini/cart',
+  dataType:'json',
+  success:function(response){
+   // console.log(response)
+   $('span[id="cartTotal"]').text(response.cartTotal);
+   $('#cartqty').text(response.cartQty);
+   var miniCart = "";
+   $.each(response.carts,function(key,value){
+    console.log(value);
+    miniCart +=`
+    <ul>
+      <li>
+          <div class="shopping-cart-img">
+              <a href="shop-product-right.html"><img alt="Nest"  src="frontend_upload/product/thumbnail/${value.options.image}" style="height:50px;width:50px" ></a>
+          </div>
+          <div class="shopping-cart-title">
+              <h4><a href="shop-product-right.html">${value.name} </a></h4>
+              <h4><span>${value.qty} × </span>${value.price} </h4>
+          </div>
+          <div class="shopping-cart-delete">
+              <a type="submit" id="${value.rowId}" onClick="mitiCartRemove(this.id)"><i class="fi-rs-cross-small"></i></a>
+          </div>
+      </li>
+  </ul>
+    `
+   });
+   $('#miniCart').html(miniCart);
+  }
+})
+}
+miniCart()
+</script>
+//////////////////Route ///////////
+ Route::get('/product/mini/cart',[CartController::class,'ProductMiniCart']);
+///////////////////Controller Code//////////////
+    public function ProductMiniCart(){
+      $carts =  Cart::content();
+      $cartTotal = Cart::total();
+      $carQty =  Cart::count();
+      return response()->json(array(
+        'carts' => $carts,
+        'cartTotal' => $cartTotal,
+        'cartQty' => $carQty,
+      ));
+    }
+///
