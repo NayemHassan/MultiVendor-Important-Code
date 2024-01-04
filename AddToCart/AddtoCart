@@ -1,3 +1,12 @@
+/////////////////frontend onclick id pass ////////////////
+ <div class="product-extra-link2">
+  <input type="hidden" id ="product_id">
+  <button type="submit" class="button button-add-to-cart"  onClick="addToCart()"><i class="fi-rs-shopping-cart"></i>Add to cart</button>
+</div>
+
+/////////////////////////
+
+
 //Ajax code
 function addToCart(){
   $('#closeModal').click(); //For close Modal When Click Add to Cart
