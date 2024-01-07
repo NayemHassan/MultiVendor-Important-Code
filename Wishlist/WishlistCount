@@ -1,0 +1,9 @@
+//HTml Code //
+<span class="pro-count blue" id="wishlistCount"></span>
+//Js code
+         $('#wishlistCount').text(response.wishlistQty)
+//Controller Code
+    $wishlistQty = Wishlist::count();
+  return response()->json([
+        'wishlistQty' => $wishlistQty,
+    ]);
