@@ -1,0 +1,125 @@
+////Html Code////
+
+///js code///
+function Compare(){
+    $.ajax({
+        type:'GET',
+        url:"/compare-data-view/",
+        dataType:'json',
+        success:function(response){
+            $('#compareQTY').text(response.compareQty)
+            var rows = "";
+            $.each(response.compare,function(key,value){
+                rows += `
+           <tr>
+
+                       <tr class="pr_image">
+                            <td class="text-muted font-sm fw-600 font-heading mw-200">Preview</td>
+                            <td class="row_img" ><img  style="height:250px;width:250px;"  src="http://127.0.0.1:8000/frontend_upload/product/thumbnail/${value.product.product_thumbnail}" /></td>
+
+                        </tr>
+                        <tr class="pr_title">
+                            <td class="text-muted font-sm fw-600 font-heading">Name</td>
+                            <td class="product_name">
+                                <h6><a href="#" class="text-heading">${value.product.product_name}</a></h6>
+                            </td>
+
+                        </tr>
+                        <tr class="pr_price">
+                            <td class="text-muted font-sm fw-600 font-heading">Price</td>
+                            <td class="product_price">
+                                ${value.product.discount_price == null
+                                    ?`<h3 class="text-brand">${value.product.selling_price}$</h3>`
+                                    :`<h3 class="text-brand">${value.product.discount_price}$</h3>`
+                                }
+                            </td>
+
+                        </tr>
+
+
+                        </tr>
+                        <tr class="description">
+                            <td class="text-muted font-sm fw-600 font-heading">Description</td>
+                            <td class="row_text font-xs">
+                                <p class="font-sm text-muted">${value.product.short_desc}</p>
+                            </td>
+
+                        </tr>
+                        <tr class="pr_stock">
+                            <td class="text-muted font-sm fw-600 font-heading">Stock status</td>
+                            <td class="text-center detail-info" data-title="Stock">
+                                ${value.product.product_qty>0
+
+                                ?`<span class="stock-status in-stock mb-0"> In Stock </span>`
+                                 :`<span class="stock-status out-stock mb-0"> Sold out </span>`
+                                }
+                            </td>
+
+                        </tr>
+                        <tr class="pr_weight">
+                            <td class="text-muted font-sm fw-600 font-heading">Size</td>
+                            <td class="row_weight">
+                                ${value.product.product_size ==null
+                                ? `<span class="row_text font-xs">-  -  -  -  -</span>`
+                                :`<span>${value.product.product_size}</span>`
+                                }
+                                </td>
+
+                        </tr>
+                        <tr class="pr_dimensions">
+                            <td class="text-muted font-sm fw-600 font-heading">Color</td>
+                            <td class="row_weight">
+                                ${value.product.product_color ==null
+                                ? `<span class="row_text font-xs">-  -  -  -  -</td>`
+                                :`<span>${value.product.product_color}</span>`
+                                }
+                                </td>
+
+                        </tr>
+                        <tr class="pr_add_to_cart">
+                            <td class="text-muted font-sm fw-600 font-heading">Buy now</td>
+
+                            <td class="row_btn">
+
+                                <a type="submit" class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5" ></i>Add to cart</a>
+                            </td>
+
+                        </tr>
+                        <tr class="pr_remove text-muted">
+                            <td class="text-muted font-md fw-600"></td>
+
+                            <td class="row_remove">
+                                <a type="submit" id="${value.id}" onClick="compareDelete(this.id)" class="text-muted"><i class="fi-rs-trash mr-5"></i><span>Remove</span> </a>
+                            </td>
+                        </tr>
+                        </tr>
+                       <hr>
+
+                     `
+            });
+            $('#comparePage').html(rows);
+        }
+    })
+
+
+}
+
+///Route///
+middleware r vitore 
+//
+ Route::controller(CompareController::class)->group(function(){
+        Route::get('/Compare/','CompareViewPage')->name('compare');
+        Route::get('/compare-data-view/','CompareDataLoad');
+        Route::get('/compare-remove/{id}','Comparedelete');
+    });
+///////////Controller code/////////\
+   public function CompareDataLoad(){
+     $compare = Compare::with('product')->where('user_id',Auth::id())->latest()->get();
+     $compareQty = Compare::count();
+     return response()->json([
+         'compare' => $compare,
+         'compareQty' => $compareQty,
+     ]);
+    }//End Method
+
+
