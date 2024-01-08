@@ -1,3 +1,4 @@
+Controller ,Database Create kore nite hobe
 //Html Code
 <a aria-label="Compare" class="action-btn" id="{{$item->id}}" onClick="addToCompare(this.id)"><i class="fi-rs-shuffle"></i></a>
 
