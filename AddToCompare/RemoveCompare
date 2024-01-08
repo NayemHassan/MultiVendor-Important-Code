@@ -1,0 +1,44 @@
+//HTml Code
+<td class="row_remove">
+  <a type="submit" id="${value.id}" onClick="compareDelete(this.id)" class="text-muted"><i class="fi-rs-trash mr-5"></i><span>Remove</span> </a>
+</td>
+
+/////JS Code /////
+function compareDelete(id){
+    $.ajax({
+        type:'GET',
+        url:"/compare-remove/"+id,
+        dataType:'json',
+        success:function(data){
+            Compare();
+            const Toast = Swal.mixin({
+        toast : true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000
+       })
+       if($.isEmptyObject(data.error)){
+        Toast.fire({
+          type:'success',
+          icon: "success",
+          title:data.success,
+        })
+       }else{
+        Toast.fire({
+          type:'error',
+          icon: "error",
+          title:data.error,
+        })
+       }
+        }
+    });
+}
+
+///Route//       
+Route::get('/compare-remove/{id}','Comparedelete');
+///Controller Code
+ public function Comparedelete($id){
+  Compare::where('user_id',Auth::id())->where('id',$id)->delete();
+
+  return response()->json(['success' => 'Successfully Compare Deleted' ]);
+}//end MEthod
