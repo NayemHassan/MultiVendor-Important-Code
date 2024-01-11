@@ -1,0 +1,41 @@
+///////Js Code ////////
+function CartsingleRemove(rowId){
+    $.ajax({
+        type:'GET',
+        url:"/cart-single-romove/"+rowId,
+        dataType:'json',
+        success:function(data){
+            Cart()
+            miniCart()
+        const Toast = Swal.mixin({
+        toast : true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000
+       });
+       if($.isEmptyObject(data.error)){
+        Toast.fire({
+          type:'success',
+          icon: "success",
+          title:data.success,
+        });
+       } else{
+        Toast.fire({
+          type:'error',
+          icon: "error",
+          title:data.error,
+        });
+       }
+        }
+    });
+}//End
+///////route////
+   Route::controller(CartController::class)->group(function(){
+        Route::get('/cart-single-romove/{rowId}','RemoveSingleCart');
+    });
+/////////Controller Code///////////////////
+public function RemoveSingleCart($rowId){
+    Cart::remove($rowId);
+    return response()->json(['success'=>'Successfully remove Cart']);
+
+ }//End Method
