@@ -1,0 +1,19 @@
+/////////Html Code////////////
+
+<a href="{{route('delete.coupon',$item->id)}}"  class="btn btn-sm btn-danger p-2" id ="delete" title="Delete Data"><i class="fas fa-trash-alt"></i></a>
+
+ ///Route//////
+   Route::controller(CouponController::class)->group(function(){
+       
+        Route::get('/admin/delete/coupon/{id}' ,'DeleteCoupon')->name('delete.coupon');
+    });
+/////Controller Code////////////
+
+public function DeleteCoupon($id){
+    Coupon::findOrFail($id)->delete();
+    $notification = array(
+        'message' =>'Coupon Deleted Successfully ',
+        'alert-type'=> 'info'
+     );
+    return redirect()->route('all.coupon')->with($notification);
+   }//End Method
