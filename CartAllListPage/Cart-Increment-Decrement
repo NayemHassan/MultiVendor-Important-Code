@@ -1,0 +1,60 @@
+///Decrement////
+////html////////
+<a type="submit" id="${value.rowId}" onClick ="Decrement(this.id)" class="qty-down"> <i class="fi-rs-angle-small-down"></i></a>
+/////js///////
+function Decrement(rowId){
+  $.ajax({
+    type:'GET',
+    url:"/cart-decrement/"+rowId,
+    dataType:'json',
+    success:function(data){
+        Cart();
+        miniCart();
+    }
+  });
+}//
+
+
+
+/////route///
+   Route::controller(CartController::class)->group(function(){
+        Route::get('/cart-decrement/{rowId}','CartDecrement');
+        Route::get('/cart-increment/{rowId}','CartIncrement');
+    });
+
+
+///Controller Code//////////
+public function CartDecrement($rowId){
+    $row = Cart::get($rowId);
+    Cart::update($rowId ,$row->qty -1);
+    return response()->json(['Decrement']);
+}//End Method
+/////////////////Incremnt ////////////////////////////////////
+////////////html Code //////////
+<a type="submit" class="qty-up" id="${value.rowId}" onClick ="Increment(this.id)"> <i class="fi-rs-angle-small-up"></i></a>
+/////////////////JS Code///////////
+function Increment(rowId){
+  $.ajax({
+    type:'GET',
+    url:"/cart-increment/"+rowId,
+    dataType:'json',
+    success:function(data){
+        Cart();
+        miniCart();
+    }
+  });
+}
+
+
+///Route
+ Route::controller(CartController::class)->group(function(){
+        Route::get('/cart-decrement/{rowId}','CartDecrement');
+        Route::get('/cart-increment/{rowId}','CartIncrement');
+    });
+///Controller Code 
+
+public function CartIncrement($rowId){
+    $row = Cart::get($rowId);
+    Cart::update($rowId ,$row->qty +1);
+    return response()->json(['Increment']);
+}//End Method
