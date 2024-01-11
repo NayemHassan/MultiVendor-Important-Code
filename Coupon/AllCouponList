@@ -43,7 +43,7 @@
 									<tr>
 										<td>{{$key+1}}</td>
 										<td>{{$item->coupon_name}}</td>
-                     <td>{{$item->coupon_discount}}%</td>
+                    								 <td>{{$item->coupon_discount}}%</td>
 										<td>{{Carbon\Carbon::parse($item->coupon_validity)->format('D,d F Y')}}</td>
 										<td>
               @if($item->coupon_validity>=Carbon\Carbon::now()->format('Y-m-d'))
@@ -53,18 +53,18 @@
               <span class="badge rounded-pill bg-danger">Invalid</span>
               @endif
 
-               </td>
-										<td>
+               									</td>
+		<td>
                 <a href="#" class="btn btn-sm btn-warning p-2" title="Edit Data"> <i class="fas fa-edit"></i> </a>
                   <a href="#"  class="btn btn-sm btn-danger p-2" id ="delete" title="Delete Data"><i class="fas fa-trash-alt"></i></a>
                   </td>
 										
-									</tr>
+		</tr>
                 @endforeach
-								</tbody>
-								<tfoot>
-                                     <tr>
-                                        <th>Sl</th>
+		</tbody>
+		<tfoot>
+	     <tr>
+		<th>Sl</th>
 										<th>Coupon Name</th>
 										<th>Coupon Discount</th>
 										<th>Coupon Validity</th>
