@@ -1,0 +1,60 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+/////////////Html Code ///////
+div class="row mb-3" bis_skin_checked="1">
+                <div class="col-sm-3" bis_skin_checked="1">
+                    <h6 class="mb-0">Division Name</h6>
+                </div>
+                <div class="col-sm-9 text-secondary form-group" bis_skin_checked="1">
+                <select class="form-select" name ="division_id"  aria-label="Default select example">
+                            <option selected="" value=""> Select Division</option>
+                            @foreach ( $division as $div)
+                            <option value="{{$div->id}}">{{$div->division_name}}</option>
+                            @endforeach
+                    </select>      
+                </div>
+              </div>
+                <div class="row mb-3" bis_skin_checked="1">
+                <div class="col-sm-3" bis_skin_checked="1">
+                    <h6 class="mb-0">Districts Name</h6>
+                </div>
+                <div class="col-sm-9 text-secondary form-group" bis_skin_checked="1">
+                <select class="form-select" name ="district_id"  aria-label="Default select example">
+                          
+                            <option ></option>
+                           
+                </select>      
+                </div>
+              </div>
+///////////////////////////////////////js///////////////////////////////
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('select[name="division_id"]').on('change',function(){
+			var division_id = $(this).val();
+			if(division_id){
+				$.ajax({
+					url:"{{('/division_id/ajax')}}/"+division_id,
+					type:"GET",
+					dataType:'json',
+					success:function(data){
+						$('select[name = "district_id"]').html('');
+						var d = $('select[name= "district_id"]').empty();
+						$.each(data,function(key,value){
+							$('select[name= "district_id"]').append(
+								'<option value="'+value.id+'">'+value.distrits_name+'</option>')
+						});
+					},
+				});
+			}
+			else{
+				alert('Danger');
+			}
+		});
+	});
+  </script>
+////////Route/////////
+        Route::get('/division_id/ajax/{division_id}' ,'DistrictsAjax');
+////////////////Controller Code ////////////
+public function DistrictsAjax($division_id){
+        $districts =ShipDistricts::where('division_id',$division_id)->orderBy('distrits_name','ASC')->get();
+       return  json_encode($districts);
+    }//
