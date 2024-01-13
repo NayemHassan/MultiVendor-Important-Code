@@ -1,0 +1,98 @@
+/////////////////HTmlCode/////////////
+<tbody id="couponCalField">
+                            
+</tbody>
+////////////////////JS Code //////////////////////
+function couponCalculation(){
+  $.ajax({
+    type:'GET',
+    url:"/coupon-calculation/",
+    dataType:'json',
+    success:function(data){
+     
+      if(data.total){
+        $('#couponCalField').html(
+          `<tr>
+              <td class="cart_total_label">
+                  <h6 class="text-muted">Subtotal</h6>
+              </td>
+              <td class="cart_total_amount">
+                  <h4 class="text-brand text-end">$${data.total}</h4>
+              </td>
+          </tr>
+         
+        
+          <tr>
+              <td class="cart_total_label">
+                  <h6 class="text-muted">Grand Total</h6>
+              </td>
+              <td class="cart_total_amount">
+                  <h4 class="text-brand text-end">$${data.total}</h4>
+              </td>
+          </tr>`
+        )
+      }else{
+        $('#couponCalField').html(
+          `<tr>
+              <td class="cart_total_label">
+                  <h6 class="text-muted">Subtotal</h6>
+              </td>
+              <td class="cart_total_amount">
+                  <h4 class="text-brand text-end">$${data.subtotal}</h4>
+              </td>
+          </tr>
+          <tr>
+              <td class="cart_total_label">
+                  <h6 class="text-muted">Coupon</h6>
+              </td>
+              <td class="cart_total_amount">
+                  <h6 class="text-brand text-end">${data.coupon_name} <a type="submit" onClick="removeCoupon()" > <i class="fi-rs-trash"></i> </a></h6>
+              </td>
+          </tr>
+          <tr>
+              <td class="cart_total_label">
+                  <h6 class="text-muted">Discount Amount</h6>
+              </td>
+              <td class="cart_total_amount">
+                  <h4 class="text-brand text-end">$${data.discount_amount}</h4>
+              </td>
+          </tr>
+          
+          <tr>
+              <td class="cart_total_label">
+                  <h6 class="text-muted">Grand Total</h6>
+              </td>
+              <td class="cart_total_amount">
+                  <h4 class="text-brand text-end">$${data.total_amount}</h4>
+              </td>
+          </tr>`
+        )
+      }
+    }
+  });
+}
+couponCalculation();
+
+//////////////////Route///////////////////////
+Route::controller(CartController::class)->group(function(){
+        Route::post('/apply-coupon-ajax/','ApplyCoupon');  
+        Route::get('/coupon-calculation/','CouponCalculation');  
+        Route::get('/remove-coupon/','CouponRemove');  
+    });
+////////////////////Controller Code ///////////////////
+public function CouponCalculation(){
+    if(Session::has('coupon')){
+        return response()->json(array(
+            'subtotal' => Cart::total(),
+            'coupon_name' => session()->get('coupon')['coupon_name'],
+            // 'coupon_discount' => session()->get('coupon')['coupon_discount'],
+             'discount_amount' => session()->get('coupon')['discount_amount'],
+             'total_amount' => session()->get('coupon')['total_amount'],
+        ));
+       
+    }else{
+        return response()->json(array(
+            'total' =>Cart::total(),
+        ));
+    }
+////////////////////
