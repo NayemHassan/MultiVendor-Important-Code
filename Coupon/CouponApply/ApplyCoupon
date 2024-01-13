@@ -1,0 +1,81 @@
+///////////////////HTML CODE////////////////
+    <div class="col-lg-5">
+@if(Session::has('coupon'))
+
+@else
+<div class="p-40" id="couponField">
+        <h4 class="mb-10">Apply Coupon</h4>
+        <p class="mb-30"><span class="font-lg text-muted">Using A Promo Code?</p>
+        <form action="#">
+            <div class="d-flex justify-content-between">
+                <input class="font-medium mr-15 coupon" id="coupon_name" name="Coupon" placeholder="Enter Your Coupon">
+                <a type="submit" onClick="ApplyCoupon()" class="btn"><i class="fi-rs-label mr-10"></i>Apply</a>
+            </div>
+        </form>
+    </div>
+@endif
+ 
+
+</div>
+////////////JS Code ////////////////
+function ApplyCoupon(){
+  var coupon_name = $('#coupon_name').val();
+  $.ajax({
+    type:'POST',
+    url:'/apply-coupon-ajax/',
+    dataType:'json',
+    data:{
+      coupon_name:coupon_name
+    },
+    success:function(data){
+     
+      couponCalculation();
+      if(data.validity == true){
+        $('#couponField').hide();
+      }
+      const Toast = Swal.mixin({
+        toast : true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000
+       });
+       if($.isEmptyObject(data.error)){
+        Toast.fire({
+          type:'success',
+          icon: "success",
+          title:data.success,
+        });
+       } else{
+        Toast.fire({
+          type:'error',
+          icon: "error",
+          title:data.error,
+        });
+       }//End Message
+    }
+  });
+}
+////////////////////////Route/////////////////
+Route::controller(CartController::class)->group(function(){
+        Route::post('/apply-coupon-ajax/','ApplyCoupon');  
+        Route::get('/coupon-calculation/','CouponCalculation');  
+        Route::get('/remove-coupon/','CouponRemove');  
+    });
+////////////////Controller Code /////////////////////////
+public function ApplyCoupon(Request $request){
+ $coupon = Coupon::where('coupon_name',$request->coupon_name)->where('coupon_validity','>=',Carbon::now()->format('Y-m-d'))->first();
+ if($coupon){
+    Session::put('coupon',[
+        'coupon_name'=>$coupon->coupon_name,
+        'coupon_discount'=>$coupon->coupon_discount,
+        'discount_amount'=> round(Cart::total()* $coupon->coupon_discount/100),
+        'total_amount' =>round(Cart::total() - Cart::total()* $coupon->coupon_discount/100),
+    ]);
+    return response()->json(array(
+        'validity' => true,
+        'success' =>'Successfully Applyed Coupon'
+    ));
+ }else{
+    return response()->json(['error' =>'invlid Coupon']);
+ }
+}//End Method
