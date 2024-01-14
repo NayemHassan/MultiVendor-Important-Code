@@ -250,8 +250,13 @@
 
   </script>
 @endsection
-
-
+/////////////////////////////////////////////////////////////ROUTE CODE///////////////////////////////////////
+  Route::controller(CheckoutController::class)->group(function(){
+    Route::get('/shipping-districts-ajax/{division_id}','Shippingdistricts');  
+    Route::get('/shipping-state-ajax/{district_id}','ShippingState');  
+    Route::post('/checkout/store','StoreCheckout')->name('store.checkout');  
+   
+});
 /////////////////////////////////////////////////////////////CONTROLLER CODE///////////////////////////////////////
 <?php
 
