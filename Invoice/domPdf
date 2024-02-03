@@ -1,0 +1,17 @@
+//Go to this link=====https://github.com/barryvdh/laravel-dompdf 
+composer require barryvdh/laravel-dompdf //Install it cmd 
+
+  ////Controller Code////
+  use  use Barryvdh\DomPDF\Facade\Pdf;
+
+   public function OrderInvoice($id){
+    $detailsOrder= orders::with('division','district','state')->where('user_id',Auth::user()->id)->where('id',$id)->orderBy('id','DESC')->first();
+    
+    $orderItem = OrderItem::with('product','vendor')->where('order_id',$id)->orderBy('id','DESC')->get();
+    $pdf = Pdf::loadView('frontend.userdashboard.order_invoice',compact('detailsOrder','orderItem'))->setPaper('a4')->setOption([
+        'teamDir' => public_path(), 
+        'chroot' => public_path(), 
+    ]); 
+    return $pdf->download('invoice.pdf');
+    
+   }//End Method
