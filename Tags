@@ -1,0 +1,6 @@
+ @php
+                                           $tags = explode(",", $singleBlog->tags);
+                                       @endphp
+                                        @for($i=0; $i < count($tags); $i++)
+                                        <a href="#">{{$tags[$i]}}</a>
+                                        @endfor
