@@ -1,0 +1,138 @@
+/////
+<form action="{{route('product.search')}}" method="POST">
+      @csrf
+      
+      <input name="search" id="search" onfocus="search_result_show()" onblur="search_result_hide()" placeholder="Search for items..." />
+      <div id="productSearch"></div>
+  </form>
+                       
+<!-- Here Some Code For Searching -->
+<style>
+    #productSearch{
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background:#fff;
+        z-index: 9999;
+        border-radius: 5px;
+        margin-top: 5px;
+    }
+</style>
+<script>
+    function search_result_show(){
+        $("#productSearch").slideDown();
+    }
+    function search_result_hide(){
+        $("#productSearch").slideUp();
+    }
+</script>
+
+////
+
+.env ---- app_url = http://127.0.0.1:8000/
+/////add csrf token in master branch ajax ///
+$(document).ready(function () {
+    const site_url = "http://127.0.0.1:8000/";
+    $("body").on("keyup",function () { 
+       const text = $("#search").val();
+      // console.log(text);
+      if(text.length > 0){
+        $.ajax({  
+            url: site_url +"search-product",
+            data: {search:text},
+            method: "POST",
+            beforSend: function(){
+                return request.setRequestHeader('X-CSRF-TOKEN',('meta[name="csrf-token"]'));
+            },
+            success: function (result) {
+                $("#productSearch").html(result);
+            }
+        }); //End Ajax
+      }//End If
+      if(text.length < 1)
+        $("#productSearch").html("");
+      
+    })
+});
+/////controller code ///
+ public function ProductSearchAjax(Request $request){
+    $request->validate([
+      'search' =>'required',
+    ]);
+    $item = $request->search;
+    $products = Product::where('product_name', 'LIKE', "%$item%")->select('product_name','product_slug','selling_price','product_thumbnail','id')->limit(6)->get();
+
+    return view('frontend.product.product_search_ajax', compact('products'));
+ }
+///
+   ///Route //
+Route::post('/search-product','ProductSearchAjax')->name('product.search.ajax');
+
+///
+///blade code///
+@if($products -> isEmpty())
+
+<h4 class="text-center text-danger">No Product Found</h4>
+
+@else
+<style>
+.card{
+		background-color: #fff;
+		padding: 15px;
+		border: none;
+	}
+	.input-box{
+		position: relative;
+	}
+	.input-box i{
+		position: absolute;
+		right: 13px;
+		top: 15px;
+		color: #ced4da;
+	}
+	.form-control{
+		height: 50px;
+		background-color: #eeeeee69;
+	}
+	.form-control:focus{
+		background-color: #eeeeee69;
+		box-shadow: none;
+		border-color: #eee;
+	}
+	.list{
+		padding-top: 20px;
+		padding-bottom: 10px;
+		display: flex;
+		align-items: center;
+	}
+	.border-bottom{
+		border-bottom: 2px solid #eee;
+	}
+	.list i {
+		font-size: 19px;
+		color: red;
+	}
+	.list small{
+		color: #dedddd;
+	}
+</style>
+<div class="container">
+  <div class="row d-flex justify-content-center">
+    <div class="col-md-12">
+        <div class="card"> 
+            @foreach($products as $product)
+        <a href="{{url('product/details/'.$product->id.'/'.$product->product_slug)}}">
+            <div class="list border-bottom">
+                <img src=" {{asset('frontend_upload/product/thumbnail/'.$product->product_thumbnail)}}" height="50px" width="50px" alt="Product Thumbnail">
+                <div class="d-flex flex-column ml-5" style="margin-left:10px; font-size:16px;font-weight:bold">
+                    <span>{{$product->product_name}}</span><small>${{$product->selling_price}}</small>
+                </div>
+            </div>
+        </a>
+        @endforeach
+        </div>
+    </div>
+  </div>
+</div>
+@endif
