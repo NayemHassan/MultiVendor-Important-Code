@@ -1,0 +1,26 @@
+ <ul class="SliderData">
+    <!-- Slide 1 -->
+    
+    <!-- /End Slide 1 -->
+    <!-- Slide 2 -->
+    <!-- /End Slide 2 -->
+</ul>
+<script>
+    $(document).ready(function() {
+       $.ajax({
+        url:"https://dr.sobrokom.store/api/doctor/home-slider/1",
+        type:'GET',
+        success:function(res){
+            let sliderData ="";
+            $.each(res.sliderInfo, function( key, value){
+                // console.log(value.long_caption);
+                sliderData +=`<li data-transition="random">
+                    <img src="https://dr.sobrokom.store/uploads/slider_image/${value.slider_image}" alt="image" data-bgposition="center center" data-no-retina>
+                    <!-- Layers -->
+                </li>`;
+            });
+            $('.SliderData').html(sliderData);
+        }
+       });
+    })
+</script>
