@@ -1,0 +1,43 @@
+ <div id="filter-rander">
+            @include('pos.expense.expense-filter-rander-table')
+           </div>
+////
+const filter = document.querySelector('#filter')
+filter.addEventListener('click', function(e) {
+    // alert('ok');
+    e.preventDefault();
+let fromDate = document.querySelector('.from-date').value;
+let toDate = document.querySelector('.to-date').value;
+let filterCtegory = document.querySelector('.filter-category').value;
+// console.log(filterCtegory);
+$.ajax({
+    url:"{{route('expense.filter.view')}}",
+    method:'GET',
+    data: {
+        fromDate,
+        toDate,
+        filterCtegory,
+    },
+    success:function(res){
+        jQuery('#filter-rander').html(res);
+    }
+
+})
+});
+
+////Controller code
+
+
+public function ExpenseFilterView(Request $request){
+        $expenseCat = ExpenseCategory::latest()->get();
+        // $expenseCategory  = ExpenseCategory::latest()->get();
+        $expense = Expense::when($request->filterCtegory, function ($query) use ($request) {
+            return $query->where('expense_category_id', $request->filterCtegory);
+        })
+        ->when($request->fromDate && $request->toDate, function ($query) use ($request) {
+            return $query->whereBetween('expense_date', [$request->fromDate, $request->toDate]);
+        })
+        ->get();
+
+        return view('pos.expense.expense-filter-rander-table', compact('expense', 'expenseCat'))->render();
+    }
