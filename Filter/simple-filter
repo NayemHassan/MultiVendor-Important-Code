@@ -1,0 +1,39 @@
+document.querySelector('#transactionfilter').addEventListener('click', function(e) {
+        e.preventDefault();
+        let startDate = document.querySelector('.start-date').value;
+
+            let endDate = document.querySelector('.end-date').value;
+            // alert(endDate);
+            let filterCustomer = document.querySelector('.transaction_customer_name').value;
+            let filterSupplier = document.querySelector('.transaction_supplier_name').value;
+            //   alert(filterSupplier);
+            $.ajax({
+                url: "{{ route('transaction.filter.view') }}",
+                method: 'GET',
+                data: {
+                    startDate,
+                    endDate,
+                    filterCustomer,
+                    filterSupplier,
+                },
+                success: function(res) {
+                    jQuery('#transaction-filter-rander').html(res);
+                }
+            });
+        });
+////////////////////////////////////////////////////////////////
+        public function TransactionFilterView(Request $request){
+
+        $transaction = Transaction::when($request->filterCustomer, function ($query) use ($request) {
+            return $query->where('customer_id', $request->filterCustomer);
+        })
+        // ->when($request->filterSupplier, function ($query) use ($request) {
+        //     return $query->where('supplier_id', $request->filterSupplier);
+        // })
+        ->when($request->startDate && $request->endDate, function ($query) use ($request) {
+            return $query->whereBetween('date', [$request->startDate, $request->endDate]);
+        })
+        ->get();
+        return view('pos.transaction.transaction-filter-rander-table', compact('transaction'))->render();   ////Compact r transaction rander page e jabe
+
+    }
