@@ -1,0 +1,53 @@
+////////////////////////controller
+public function CheckAlreadyStock(Request $request){
+        // $warehouseId = $request->warehouse_id;
+        // dd($warehouseId);
+        // $existingStocksIds = WarehouseRack::where('warehouse_id', $warehouseId)->pluck('stock_id');
+        $existingStocksIds = WarehouseRack::pluck('stock_id');
+        $rackStocks = Stock::whereNotIn('id',$existingStocksIds)->with('product')->get();
+        return response()->json($rackStocks);
+    }
+///////////////////Route/////////////////
+      Route::get('/stock-already-exists', 'CheckAlreadyStock');
+/////////////////blade code /////////////////////
+      <div class="mb-3 ">
+          <label for="ageSelect" class="form-label">Select Product Stock</label>
+          <select class="js-example-basic-single2 form-control form-select " data-width="100%" data-loaded="false" id="stockProduct" name="stock_id">
+              <option selected disabled>Select Stocks </option>
+    
+          </select>
+      </div>
+////////////////////////////////////////////////dropdown Already not exist check///////////
+$(document).ready(function() {
+            $('#stockProduct').on('focus', function() {
+                
+             //   let warehouseId = $('#warehouseSelect').val();
+          // Check if the dropdown already has options loaded (optional)
+                if ($(this).data('loaded') === "true") {
+                    return;
+                }
+                $.ajax({
+                    url: '/stock-already-exists',
+                 //   data: { warehouse_id: warehouseId },
+                    method: 'GET',
+                    success: function(data) {
+                        // console.log(data)
+                        var stockDropdown = $('#stockProduct');
+                        stockDropdown.empty();
+                        stockDropdown.append(
+                            '<option selected disabled>Select Stock</option>');
+
+                            $.each(data, function(index, rackStocks) {
+                                stockDropdown.append(
+                                    '<option value="' + rackStocks.id + '">' +
+                                        rackStocks.product.name + ' | Stocks: ' + rackStocks.stock_quantity +
+                                    '</option>'
+                                );
+                            });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching Stock Data:', error);
+                    }
+                });
+            });
+        });
