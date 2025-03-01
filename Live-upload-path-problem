@@ -1,0 +1,4 @@
+//index and htaccess  file copye kore main path e rakha
+index file edit kora like './' ayvabe rakhaa shob gula
+jss css shoho onno je shob path lekha hoise oigula i /public use korte hobe nahole css js kaj korbe na
+   <meta property="og:image" content="{{ asset('public/backend/assets/images/seo-image.jpg') }}"> emn vabe
